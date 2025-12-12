@@ -5,19 +5,22 @@ const Button = ({ onClick, text }) => {
 };
 const StatisticLine = ({ text, value }) => {
   return (
-    <p>{text} {value}</p>
+    <tr><td>{text}</td><td>{value}</td></tr>
   );
 };
 const Statistics = (props) => {
+ 
   return (
-    <div>
+    <table>
+      <tbody>
       <StatisticLine text="number of good" value={props.good} />
-      <StatisticLine text="number of neutral" value={props.neutral} />
-      <StatisticLine text="number of bad" value={props.bad} />
-      <StatisticLine text="all" value={props.all} />
-      <StatisticLine text="average" value={props.average} />
-      <StatisticLine text="positive" value={props.positive} />
-    </div>
+        <StatisticLine text="number of neutral" value={props.neutral} />
+        <StatisticLine text="number of bad" value={props.bad} />
+        <StatisticLine text="all" value={props.all} />
+        <StatisticLine text="average" value={props.average} />
+        <StatisticLine text="positive" value={props.positive} />
+      </tbody>
+    </table>
   );
 };
 
