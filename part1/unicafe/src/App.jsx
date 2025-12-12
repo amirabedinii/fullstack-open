@@ -1,28 +1,16 @@
-const Hello = (props) => {
-
-  console.log(props)
-  return (
-    <div>
-      <p>
-
-        Hello {props.name}, you are {props.age} years old
-      </p>
-    </div>
-  )
-}
+import { useState } from 'react'
 
 const App = () => {
-
-  const name = 'Peter'
-  const age = 10
+  // save clicks of each button to its own state
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
 
   return (
     <div>
-      <h1>Greetings</h1>
-
-      <Hello name='Maya' age={26 + 10} />
-      <Hello name={name} age={age} />
+      code here
     </div>
   )
 }
+
 export default App
