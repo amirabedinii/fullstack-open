@@ -3,16 +3,20 @@ import { useState } from "react";
 const Button = ({ onClick, text }) => {
   return <button onClick={onClick}>{text}</button>;
 };
-
+const StatisticLine = ({ text, value }) => {
+  return (
+    <p>{text} {value}</p>
+  );
+};
 const Statistics = (props) => {
   return (
     <div>
-      <p>number of good {props.good}</p>
-      <p>number of neutral {props.neutral}</p>
-      <p>number of bad {props.bad}</p>
-      <p>all {props.all} feedbacks</p>
-      <p>average {props.average}</p>
-      <p>positive {props.positive}%</p>
+      <StatisticLine text="number of good" value={props.good} />
+      <StatisticLine text="number of neutral" value={props.neutral} />
+      <StatisticLine text="number of bad" value={props.bad} />
+      <StatisticLine text="all" value={props.all} />
+      <StatisticLine text="average" value={props.average} />
+      <StatisticLine text="positive" value={props.positive} />
     </div>
   );
 };
