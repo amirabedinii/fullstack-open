@@ -28,9 +28,19 @@ const App = () => {
       );
       return;
     }
-    setPersons(persons.concat({ name: newName, number: newNumber }));
-    setNewName("");
-    setNewNumber("");
+    axios
+      .post("http://localhost:3001/persons", {
+        name: newName,
+        number: newNumber,
+      })
+      .then((response) => {
+        setPersons(persons.concat(response.data));
+        setNewName("");
+        setNewNumber("");
+      })
+      .catch((error) => {
+        alert(`${newName} already exists in the phonebook`);
+      });
   };
 
   useEffect(() => {

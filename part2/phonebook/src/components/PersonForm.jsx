@@ -5,6 +5,11 @@ const PersonForm = ({ newName, newNumber, handleNameChange, handleNumberChange, 
         <div>
           <label htmlFor="name">name: </label>
           <input id="name" value={newName} onChange={handleNameChange} />
+          <label htmlFor="number">number: </label>
+          <input id="number" value={newNumber} onChange={handleNumberChange} />
+        </div>
+        <div>
+          <button type="submit">add</button>
         </div>
       </form>
     </div>
