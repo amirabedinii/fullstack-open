@@ -1,12 +1,15 @@
 import { useState } from "react";
+import { useEffect } from "react";
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456" },
+    { name: "Arto Hellas", number: "123456" },
   ]);
+  const [filteredPersons, setFilteredPersons] = useState(persons);
 
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [search, setSearch] = useState("");
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -28,8 +31,24 @@ const App = () => {
     setNewNumber("");
   };
 
+  useEffect(() => {
+    setFilteredPersons(
+      persons.filter((person) =>
+        person.name.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [search, persons]);
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+  };
+
   return (
     <div>
+      <div>
+        <label htmlFor="search">search: </label>
+        <input id="search" value={search} onChange={handleSearchChange} />
+      </div>
       <h2>Phonebook</h2>
       <form>
         <div>
@@ -46,7 +65,7 @@ const App = () => {
       </form>
       <h2>numbers</h2>
       <ul>
-        {persons.map((person) => (
+        {filteredPersons.map((person) => (
           <li key={person.name}>
             {person.name} {person.number}
           </li>
