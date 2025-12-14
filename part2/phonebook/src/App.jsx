@@ -3,11 +3,10 @@ import { useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import axios from "axios";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "123456" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [filteredPersons, setFilteredPersons] = useState(persons);
 
   const [newName, setNewName] = useState("");
@@ -42,6 +41,12 @@ const App = () => {
     );
   }, [search, persons]);
 
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons").then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
+
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
   };
@@ -51,7 +56,13 @@ const App = () => {
       <h1>Phonebook</h1>
       <Filter search={search} handleSearchChange={handleSearchChange} />
       <h2>add a new</h2>
-      <PersonForm newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} handleSubmit={handleSubmit} />
+      <PersonForm
+        newName={newName}
+        newNumber={newNumber}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+        handleSubmit={handleSubmit}
+      />
       <h2>Persons</h2>
       <Persons persons={filteredPersons} />
     </div>
