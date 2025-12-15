@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import axios from "axios";
+import http from "./services/http";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -22,25 +22,58 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (persons.some((person) => person.name === newName)) {
+    if (
+      persons.some(
+        (person) => person.name === newName && person.number === newNumber
+      )
+    ) {
       alert(
         `${newName} is already in the phonebook, try again with a different name`
       );
       return;
+    } else if (persons.some((person) => person.name === newName)) {
+      http
+        .update(persons.find((person) => person.name === newName).id, {
+          name: newName,
+          number: newNumber,
+        })
+        .then((response) => {
+          setPersons(
+            persons.map((person) =>
+              person.id === response.data.id ? response.data : person
+            )
+          );
+          setNewName("");
+          setNewNumber("");
+        });
+      return;
+    } else {
+      http
+        .create({
+          name: newName,
+          number: newNumber,
+        })
+        .then((response) => {
+          setPersons(persons.concat(response.data));
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch((error) => {
+          alert(`${newName} already exists in the phonebook`);
+        });
     }
-    axios
-      .post("http://localhost:3001/persons", {
-        name: newName,
-        number: newNumber,
-      })
-      .then((response) => {
-        setPersons(persons.concat(response.data));
-        setNewName("");
-        setNewNumber("");
-      })
-      .catch((error) => {
-        alert(`${newName} already exists in the phonebook`);
+  };
+
+  const handleDelete = (id) => {
+    if (
+      window.confirm(
+        `Delete ${persons.find((person) => person.id === id).name}?`
+      )
+    ) {
+      http.remove(id).then((response) => {
+        setPersons(persons.filter((person) => person.id !== id));
       });
+    }
   };
 
   useEffect(() => {
@@ -52,7 +85,7 @@ const App = () => {
   }, [search, persons]);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
+    http.getAll().then((response) => {
       setPersons(response.data);
     });
   }, []);
@@ -74,7 +107,7 @@ const App = () => {
         handleSubmit={handleSubmit}
       />
       <h2>Persons</h2>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} handleDelete={handleDelete} />
     </div>
   );
 };
