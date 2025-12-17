@@ -33,7 +33,7 @@ Thumbs.db
 *~
 
 # Build outputs
-dist/
+# dist/
 build/
 *.tsbuildinfo
 

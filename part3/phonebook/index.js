@@ -1,6 +1,11 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let persons = [
   {
@@ -76,6 +81,18 @@ app.get("/info", (req, res) => {
   res.send(`<p>Phonebook has info for ${persons.length} people</p>
   <p>${new Date().toISOString()}</p>`);
 });
+
+
+app.use(express.static(path.join(__dirname, "./dist")));
+
+
+app.get("/{*splat}", (req, res) => {
+  if (req.path.startsWith("/api") || req.path.startsWith("/info")) {
+    return res.status(404).end();
+  }
+  res.sendFile(path.join(__dirname, "./dist/index.html"));
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
