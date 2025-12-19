@@ -61,7 +61,7 @@ const startServer = async () => {
   });
 
   app.get("/api/persons/:id", (req, res, next) => {
-    Person.findById(req.params.id)
+    Person.findById(req.params.id)// from database
       .then((person) => {
         if (person) {
           res.json(person);
