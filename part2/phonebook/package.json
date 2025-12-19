@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "deploy": "npm run build && rm -rf ../../part3/phonebook/dist && mkdir -p ../../part3/phonebook/dist && cp -r dist/. ../../part3/phonebook/dist/",
     "server": "json-server -p 3001 db.json"
   },
   "dependencies": {

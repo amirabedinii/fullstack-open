@@ -52,6 +52,15 @@ const App = () => {
           setTimeout(() => {
             setNotification(null);
           }, 5000);
+        })
+        .catch((error) => {
+          setNotification({
+            message: error.response.data.error,
+            type: "error",
+          });
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
         });
       return;
     } else {
@@ -73,7 +82,13 @@ const App = () => {
           }, 5000);
         })
         .catch((error) => {
-          alert(`${newName} already exists in the phonebook`);
+          setNotification({
+            message: error.response.data.error,
+            type: "error",
+          });
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
         });
     }
   };
