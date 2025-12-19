@@ -34,7 +34,7 @@ const connectDB = async () => {
     console.log("connected to MongoDB");
   } catch (error) {
     console.log(`error: ${error.message}`);
-    process.exit(1); // Exit if connection fails
+    process.exit(1); 
   }
 };
 const startServer = async () => {
@@ -60,7 +60,7 @@ const startServer = async () => {
     });
   });
 
-  app.get("/api/persons/:id", (req, res) => {
+  app.get("/api/persons/:id", (req, res, next) => {
     Person.findById(req.params.id)
       .then((person) => {
         if (person) {
@@ -69,24 +69,24 @@ const startServer = async () => {
           res.status(404).end();
         }
       })
-      .catch((error) => {
-        console.log(`error: ${error.message}`);
-        res.status(500).end();
-      });
+      .catch((error) => next(error));
   });
 
-  app.post("/api/persons", (req, res) => {
+  app.post("/api/persons", (req, res, next) => {
     const { name, number } = req.body;
     if (!name || !number) {
       return res.status(400).json({ error: "name and number are required" });
     }
     const newPerson = new Person({ name, number });
-    newPerson.save().then((savedPerson) => {
-      res.json(savedPerson);
-    });
+    newPerson
+      .save()
+      .then((savedPerson) => {
+        res.json(savedPerson);
+      })
+      .catch((error) => next(error));
   });
 
-  app.delete("/api/persons/:id", (req, res) => {
+  app.delete("/api/persons/:id", (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
       .then((deletedPerson) => {
         if (deletedPerson) {
@@ -95,25 +95,19 @@ const startServer = async () => {
           res.status(404).end();
         }
       })
-      .catch((error) => {
-        console.log(`error: ${error.message}`);
-        res.status(500).end();
-      });
+      .catch((error) => next(error));
   });
 
-  app.get("/info", (req, res) => {
+  app.get("/info", (req, res, next) => {
     Person.countDocuments()
       .then((count) => {
         res.send(`<p>Phonebook has info for ${count} people</p>
     <p>${new Date().toISOString()}</p>`);
       })
-      .catch((error) => {
-        console.log(`error: ${error.message}`);
-        res.status(500).end();
-      });
+      .catch((error) => next(error));
   });
 
-  // Static files and catch-all route LAST
+
   app.use(express.static(path.join(__dirname, "./dist")));
 
   app.get("/{*splat}", (req, res) => {
@@ -122,6 +116,18 @@ const startServer = async () => {
     }
     res.sendFile(path.join(__dirname, "./dist/index.html"));
   });
+
+  const errorHandler = (error, req, res, next) => {
+    console.error(error.message);
+
+    if (error.name === "CastError") {
+      return res.status(400).json({ error: "malformatted id" });
+    }
+
+    next(error);
+  };
+
+  app.use(errorHandler);
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
