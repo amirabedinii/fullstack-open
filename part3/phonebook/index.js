@@ -12,8 +12,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const phonebookSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minlength: [3, 'Name must be at least 3 characters long'],
+    required: true,
+  },
+  number: {
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /^\d{2,3}-\d{6,8}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    },
+    required: [true, 'User  number required']
+  }
+
 });
 
 phonebookSchema.set("toJSON", {
@@ -86,6 +100,23 @@ const startServer = async () => {
       .catch((error) => next(error));
   });
 
+  app.put("/api/persons/:id", (req, res, next) => {
+    const { name, number } = req.body;
+    Person.findByIdAndUpdate(
+      req.params.id,
+      { name, number },
+      { new: true, runValidators: true, context: "query" }
+    )
+      .then((updatedPerson) => {
+        if (updatedPerson) {
+          res.json(updatedPerson);
+        } else {
+          res.status(404).end();
+        }
+      })
+      .catch((error) => next(error));
+  });
+
   app.delete("/api/persons/:id", (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
       .then((deletedPerson) => {
@@ -122,6 +153,8 @@ const startServer = async () => {
 
     if (error.name === "CastError") {
       return res.status(400).json({ error: "malformatted id" });
+    } else if (error.name === "ValidationError") {
+      return res.status(400).json({ error: error.message });
     }
 
     next(error);
