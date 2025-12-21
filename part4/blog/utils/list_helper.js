@@ -1,5 +1,5 @@
-const dummy = (blogs) => {
-  return 1;
+const favoriteBlog = (blogs) => {
+  return blogs.reduce((max, blog) => blog.likes > max.likes ? blog : max, blogs[0]);
 };
 
 const totalLikes = (blogs) => {
@@ -7,6 +7,6 @@ const totalLikes = (blogs) => {
 };
 
 export default {
-  dummy,
   totalLikes,
+  favoriteBlog,
 };
