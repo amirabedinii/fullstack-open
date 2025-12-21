@@ -1,2 +1,68 @@
-# fullstack-open
-The phonebook app is now live at the following URL : https://fullstack-open-l2sb.onrender.com/
+# Full Stack Open
+
+My solutions for the [Full Stack Open](https://fullstackopen.com/) course by the University of Helsinki.
+
+## 🌐 Live Demo
+
+The phonebook app is live at: https://fullstack-open-l2sb.onrender.com/
+
+## 📁 Repository Structure
+
+### Part 0 - Fundamentals of Web apps
+Sequence diagrams illustrating how web applications work.
+
+| Exercise | Description |
+|----------|-------------|
+| `new_note_creation_04.md` | Diagram for traditional note creation |
+| `single_page_app_05.md` | Diagram for SPA loading notes |
+| `new_note_spa_06.md` | Diagram for SPA note creation |
+
+### Part 1 - Introduction to React
+Introduction to React concepts: components, state, and event handlers.
+
+| Project | Description |
+|---------|-------------|
+| `courseinfo` | Display course information with nested components |
+| `unicafe` | Feedback app with statistics using React state |
+| `anecdotes` | Random anecdotes app with voting functionality |
+
+### Part 2 - Communicating with server
+Working with forms, fetching data from servers, and styling React apps.
+
+| Project | Description |
+|---------|-------------|
+| `courseinfo` | Extended version with modular components |
+| `phonebook` | Contact management app with REST API integration |
+
+### Part 3 - Programming a server with NodeJS and Express
+Building a backend with Node.js, Express, and MongoDB.
+
+| Project | Description |
+|---------|-------------|
+| `phonebook` | REST API backend with MongoDB, deployed to Render |
+
+## 🛠️ Technologies Used
+
+- **Frontend**: React, Vite, Axios
+- **Backend**: Node.js, Express
+- **Database**: MongoDB with Mongoose
+- **Deployment**: Render
+- **Linting**: ESLint
+
+## 🚀 Running Locally
+
+### Frontend (part1 & part2)
+```bash
+cd part2/phonebook
+npm install
+npm run dev
+```
+
+### Backend (part3)
+```bash
+cd part3/phonebook
+npm install
+npm run dev
+```
+
+Requires a `.env` file with `MONGODB_URI` for database connection.
