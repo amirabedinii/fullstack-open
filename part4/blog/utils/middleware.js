@@ -3,7 +3,9 @@ import logger from './logger.js'
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
   logger.info('Path:  ', request.path)
-  logger.info('Body:  ', request.body)
+  if (request.method === 'POST' || request.method === 'PUT' || request.method === 'DELETE') {
+    logger.info('Body:  ', request.body)
+  }
   logger.info('---')
   next()
 }
