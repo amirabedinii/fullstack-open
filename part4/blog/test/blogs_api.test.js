@@ -130,3 +130,98 @@ describe("POST /api/blogs", () => {
     await Blog.deleteMany({});
   });
 });
+
+describe("DELETE /api/blogs/:id", () => {
+  before(async () => {
+    await setupDatabase();
+  });
+
+  after(async () => {
+    await closeDatabase();
+  });
+  
+  test("deletes a blog post", async () => {
+    const newBlog = {
+      title: "Test Blog 4",
+      author: "Author 4",
+      url: "https://www.example.com",
+      likes: 15,
+    };
+    
+    const response = await api.post("/api/blogs").send(newBlog).expect(201);
+
+    await api.delete(`/api/blogs/${response.body.id}`).expect(204);
+
+    const blogsAfterDelete = await Blog.find({});
+    assert.strictEqual(blogsAfterDelete.length, 0);
+    await Blog.deleteMany({});
+  });
+
+  test("returns 404 if blog post not found", async () => {
+    const validButNonExistentId = "507f1f77bcf86cd799439011";
+    const response = await api.delete(`/api/blogs/${validButNonExistentId}`).expect(404);
+
+    assert.strictEqual(response.body.error, "blog not found");
+    await Blog.deleteMany({});
+  });
+
+  test("returns 400 if id is invalid", async () => {
+    const response = await api.delete("/api/blogs/123").expect(400);
+
+    assert.strictEqual(response.body.error, "invalid id");
+    await Blog.deleteMany({});
+  });
+});
+
+
+describe("PUT /api/blogs/:id", () => {
+  before(async () => {
+    await setupDatabase();
+  });
+
+  after(async () => {
+    await closeDatabase();
+  });
+
+  test("updates a blog post", async () => {
+    const newBlog = {
+      title: "Test Blog 4",
+      author: "Author 4",
+      url: "https://www.example.com",
+      likes: 15,
+    };
+
+    const response = await api.post("/api/blogs").send(newBlog).expect(201);
+
+    const updatedBlog = {
+      title: "Test Blog 5",
+      author: "Author 5",
+      url: "https://www.example.com",
+      likes: 20,
+    };
+    
+    await api.put(`/api/blogs/${response.body.id}`).send(updatedBlog).expect(200);
+
+    const blogsAfterUpdate = await Blog.find({});
+    assert.strictEqual(blogsAfterUpdate.length, 1);
+    assert.strictEqual(blogsAfterUpdate[0].title, updatedBlog.title);
+    assert.strictEqual(blogsAfterUpdate[0].author, updatedBlog.author);
+    assert.strictEqual(blogsAfterUpdate[0].likes, updatedBlog.likes);
+    await Blog.deleteMany({});
+  });
+
+  test("returns 404 if blog post not found", async () => {
+    const validButNonExistentId = "507f1f77bcf86cd799439011";
+    const response = await api.put(`/api/blogs/${validButNonExistentId}`).expect(404);
+
+    assert.strictEqual(response.body.error, "blog not found");
+    await Blog.deleteMany({});
+  });
+
+  test("returns 400 if id is invalid", async () => {
+    const response = await api.put("/api/blogs/123").expect(400);
+
+    assert.strictEqual(response.body.error, "invalid id");
+    await Blog.deleteMany({});
+  });
+});
