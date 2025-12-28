@@ -11,13 +11,20 @@ const userSchema = new mongoose.Schema({
   passwordHash: String,
 })
 
+userSchema.virtual('blogs', {
+  ref: 'Blog',
+  localField: '_id',
+  foreignField: 'user'
+})
+
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
     delete returnedObject.passwordHash
-  }
+  },
+  virtuals: true
 })
 
 const User = mongoose.model('User', userSchema)

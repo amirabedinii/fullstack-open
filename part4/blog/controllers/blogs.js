@@ -1,11 +1,12 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import Blog from "../models/blog.js";
+import User from "../models/user.js";
 
 const blogsRouter = Router();
 
 blogsRouter.get("/", async (request, response) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
   response.json(blogs);
 });
 
@@ -20,7 +21,14 @@ blogsRouter.post("/", async (request, response) => {
   if (!blog.likes) {
     blog.likes = 0;
   }
+  
+  const user = await User.findOne({});
+  if (user) {
+    blog.user = user._id;
+  }
+  
   const savedBlog = await blog.save();
+  await savedBlog.populate('user', { username: 1, name: 1 });
   response.status(201).json(savedBlog);
 });
 
@@ -43,7 +51,7 @@ blogsRouter.put("/:id", async (request, response) => {
     request.params.id,
     request.body,
     { new: true }
-  );
+  ).populate('user', { username: 1, name: 1 });
   if (!updatedBlog) {
     return response.status(404).json({ error: "blog not found" });
   }
