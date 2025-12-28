@@ -41,11 +41,20 @@ Building a backend with Node.js, Express, and MongoDB.
 |---------|-------------|
 | `phonebook` | REST API backend with MongoDB, deployed to Render |
 
+### Part 4 - Testing Express servers, user administration
+Testing Express applications, user administration, and token authentication.
+
+| Project | Description |
+|---------|-------------|
+| `blog` | Blog API backend with JWT authentication, user management, and comprehensive test suite |
+
 ## 🛠️ Technologies Used
 
 - **Frontend**: React, Vite, Axios
 - **Backend**: Node.js, Express
 - **Database**: MongoDB with Mongoose
+- **Authentication**: JWT (jsonwebtoken), bcrypt
+- **Testing**: Supertest
 - **Deployment**: Render
 - **Linting**: ESLint
 
@@ -65,4 +74,17 @@ npm install
 npm run dev
 ```
 
-Requires a `.env` file with `MONGODB_URI` for database connection.
+### Backend (part4)
+```bash
+cd part4/blog
+npm install
+npm run dev
+```
+
+### Running Tests (part4)
+```bash
+cd part4/blog
+npm test
+```
+
+Requires a `.env` file with `MONGODB_URI` for database connection. Part4 also requires `SECRET` for JWT token signing.
