@@ -1,4 +1,4 @@
-import { test, describe, before, after } from "node:test";
+import { test, describe, before, after, beforeEach } from "node:test";
 import assert from "node:assert";
 import supertest from "supertest";
 import app from "../app.js";
@@ -14,6 +14,10 @@ describe("POST /api/users", () => {
 
   after(async () => {
     await closeDatabase();
+  });
+
+  beforeEach(async () => {
+    await User.deleteMany({});
   });
 
   test("creates a new user with valid data", async () => {
@@ -34,11 +38,9 @@ describe("POST /api/users", () => {
     assert.strictEqual(response.body.passwordHash, undefined);
     assert.strictEqual(response.body.password, undefined);
 
-    const usersInDb = await User.find({});
-    assert.strictEqual(usersInDb.length, 1);
-    assert.strictEqual(usersInDb[0].username, newUser.username);
-
-    await User.deleteMany({});
+    // Check that we only have ONE user with THIS username
+    const usersWithThisName = await User.find({ username: newUser.username });
+    assert.strictEqual(usersWithThisName.length, 1);
   });
 
   test("returns 400 if username is missing", async () => {
@@ -107,12 +109,16 @@ describe("POST /api/users", () => {
 
   test("returns 400 if username is not unique", async () => {
     const newUser = {
-      username: "testuser",
+      username: "uniquetestuser",
       name: "Test User",
       password: "password123",
     };
 
-    await api.post("/api/users").send(newUser).expect(201);
+    const firstResponse = await api.post("/api/users").send(newUser).expect(201);
+    assert.strictEqual(firstResponse.body.username, newUser.username);
+
+    const usersAfterFirst = await User.find({});
+    assert.strictEqual(usersAfterFirst.length, 1, "First user should be created");
 
     const response = await api.post("/api/users").send(newUser).expect(400);
 
@@ -120,8 +126,6 @@ describe("POST /api/users", () => {
 
     const usersInDb = await User.find({});
     assert.strictEqual(usersInDb.length, 1);
-
-    await User.deleteMany({});
   });
 });
 

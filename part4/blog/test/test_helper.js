@@ -1,14 +1,17 @@
 import mongoose from "mongoose";
 import Blog from "../models/blog.js";
+import User from "../models/user.js";
 import config from "../utils/config.js";
 
 export const setupDatabase = async (uri = config.MONGODB_URI) => {
   await mongoose.connect(uri, { family: 4 });
   await Blog.deleteMany({});
+  await User.deleteMany({});
 };
 
 export const closeDatabase = async () => {
   await Blog.deleteMany({});
+  await User.deleteMany({});
   await mongoose.connection.close();
 };
 
